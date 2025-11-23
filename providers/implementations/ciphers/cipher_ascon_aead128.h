@@ -10,12 +10,12 @@
 #ifndef OSSL_PROV_CIPHER_ASCON_AEAD128_H
 # define OSSL_PROV_CIPHER_ASCON_AEAD128_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include <openssl/core.h>
-#define OSSL_INCLUDE_PROVIDER 1
-#include "crypto/ascon.h"  /* ASCON algorithm header */
-#undef OSSL_INCLUDE_PROVIDER
+# include <stdint.h>
+# include <stdbool.h>
+# include <openssl/core.h>
+# define OSSL_INCLUDE_PROVIDER 1
+# include "crypto/ascon.h"  /* ASCON algorithm header */
+# undef OSSL_INCLUDE_PROVIDER
 
 /*********************************************************************
  *
@@ -24,9 +24,9 @@
  *****/
 
 /* ASCON-AEAD128 uses a fixed 16-byte (128-bit) tag length */
-#ifndef FIXED_TAG_LENGTH
-# define FIXED_TAG_LENGTH ASCON_AEAD_TAG_MIN_SECURE_LEN
-#endif
+# ifndef FIXED_TAG_LENGTH
+#  define FIXED_TAG_LENGTH ASCON_AEAD_TAG_MIN_SECURE_LEN
+# endif
 
 /* Direction enum for encryption/decryption */
 typedef enum direction_et {

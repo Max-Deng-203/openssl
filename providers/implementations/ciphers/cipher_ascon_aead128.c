@@ -118,9 +118,9 @@ static void ascon_aead128_freectx(void *vctx)
 /* Internal initialization function (shared by encrypt and decrypt init) */
 
 static int ascon_aead128_internal_init(void *vctx, direction_t direction,
-                                        const unsigned char *key, size_t keylen,
-                                        const unsigned char *iv, size_t ivlen,
-                                        const OSSL_PARAM params[])
+                                       const unsigned char *key, size_t keylen,
+                                       const unsigned char *iv, size_t ivlen,
+                                       const OSSL_PARAM params[])
 {
     struct ascon_aead128_ctx_st *ctx = vctx;
 
@@ -177,21 +177,21 @@ static int ascon_aead128_internal_init(void *vctx, direction_t direction,
 }
 
 static int ascon_aead128_einit(void *vctx, const unsigned char *key, size_t keylen,
-                                const unsigned char *iv, size_t ivlen,
-                                const OSSL_PARAM params[])
+                               const unsigned char *iv, size_t ivlen,
+                               const OSSL_PARAM params[])
 {
     return ascon_aead128_internal_init(vctx, ENCRYPTION, key, keylen, iv, ivlen, params);
 }
 
 static int ascon_aead128_dinit(void *vctx, const unsigned char *key, size_t keylen,
-                                const unsigned char *iv, size_t ivlen,
-                                const OSSL_PARAM params[])
+                               const unsigned char *iv, size_t ivlen,
+                               const OSSL_PARAM params[])
 {
     return ascon_aead128_internal_init(vctx, DECRYPTION, key, keylen, iv, ivlen, params);
 }
 
 static int ascon_aead128_update(void *vctx, unsigned char *out, size_t *outl,
-                                 size_t outsize, const unsigned char *in, size_t inl)
+                                size_t outsize, const unsigned char *in, size_t inl)
 {
     struct ascon_aead128_ctx_st *ctx = vctx;
 
@@ -243,7 +243,7 @@ static int ascon_aead128_update(void *vctx, unsigned char *out, size_t *outl,
         size_t ciphertext_len;
 
         ciphertext_len = ossl_ascon_aead128_encrypt_update(ctx->internal_ctx, ciphertext,
-                                                        plaintext, plaintext_len);
+                                                           plaintext, plaintext_len);
         if (outl != NULL)
             *outl = ciphertext_len;
         return OSSL_RV_SUCCESS;
@@ -263,7 +263,7 @@ static int ascon_aead128_update(void *vctx, unsigned char *out, size_t *outl,
         size_t ciphertext_len = inl;
 
         plaintext_len = ossl_ascon_aead128_decrypt_update(ctx->internal_ctx, plaintext,
-                                                        ciphertext, ciphertext_len);
+                                                          ciphertext, ciphertext_len);
         if (outl != NULL)
             *outl = plaintext_len;
         return OSSL_RV_SUCCESS;
@@ -294,7 +294,7 @@ static int ascon_aead128_final(void *vctx, unsigned char *out, size_t *outl, siz
         size_t ret;
 
         ret = ossl_ascon_aead128_encrypt_final((ascon_aead_ctx_t *)ctx->internal_ctx,
-                                            ciphertext, tag, tag_len);
+                                                ciphertext, tag, tag_len);
         *outl = ret;
         ctx->is_tag_set = true;
 
@@ -309,8 +309,8 @@ static int ascon_aead128_final(void *vctx, unsigned char *out, size_t *outl, siz
             size_t expected_tag_len = FIXED_TAG_LENGTH;
 
             ret = ossl_ascon_aead128_decrypt_final((ascon_aead_ctx_t *)ctx->internal_ctx,
-                                                plaintext, &is_tag_valid, expected_tag,
-                                                expected_tag_len);
+                                                    plaintext, &is_tag_valid, expected_tag,
+                                                    expected_tag_len);
 
             if (is_tag_valid) {
                 *outl = ret;
@@ -330,7 +330,7 @@ static int ascon_aead128_final(void *vctx, unsigned char *out, size_t *outl, siz
 
 /* Parameters that libcrypto can get from this implementation */
 static const OSSL_PARAM *ascon_aead128_gettable_params(ossl_unused void *cctx,
-                                                        ossl_unused void *provctx)
+                                                       ossl_unused void *provctx)
 {
     static const OSSL_PARAM table[] = {
         {"blocksize", OSSL_PARAM_UNSIGNED_INTEGER, NULL, sizeof(size_t), 0},
@@ -363,7 +363,7 @@ static int ascon_aead128_get_params(OSSL_PARAM params[])
 }
 
 static const OSSL_PARAM *ascon_aead128_gettable_ctx_params(ossl_unused void *cctx,
-                                                             ossl_unused void *provctx)
+                                                           ossl_unused void *provctx)
 {
     static const OSSL_PARAM table[] = {
         {OSSL_CIPHER_PARAM_KEYLEN, OSSL_PARAM_UNSIGNED_INTEGER, NULL, sizeof(size_t), 0},
@@ -449,7 +449,7 @@ static int ascon_aead128_get_ctx_params(void *vctx, OSSL_PARAM params[])
 
 /* Parameters that libcrypto can send to this implementation */
 static const OSSL_PARAM *ascon_aead128_settable_ctx_params(ossl_unused void *cctx,
-                                                             ossl_unused void *provctx)
+                                                           ossl_unused void *provctx)
 {
     static const OSSL_PARAM table[] = {
         {OSSL_CIPHER_PARAM_AEAD_TAG, OSSL_PARAM_OCTET_STRING, NULL, 0, 0},
@@ -522,7 +522,7 @@ static int ascon_aead128_set_ctx_params(void *vctx, const OSSL_PARAM params[])
  * For AEAD ciphers, CIPHER and UPDATE should behave the same way.
  */
 static int ascon_aead128_cipher(void *vctx, unsigned char *out, size_t *outl,
-                                 size_t outsize, const unsigned char *in, size_t inl)
+                                size_t outsize, const unsigned char *in, size_t inl)
 {
     struct ascon_aead128_ctx_st *ctx = vctx;
 
